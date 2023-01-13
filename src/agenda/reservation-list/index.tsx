@@ -7,7 +7,7 @@ import {ActivityIndicator, View, FlatList, StyleProp, ViewStyle, TextStyle, Nati
 
 import {extractReservationProps} from '../../componentUpdater';
 import {sameDate} from '../../dateutils';
-import {toMarkingFormat} from '../../interface';
+import {toMarkingFormat,parseDate} from '../../interface';
 import styleConstructor from './style';
 import Reservation, {ReservationProps} from './reservation';
 import {AgendaEntry, AgendaSchedule, DayAgenda} from '../../types';
@@ -245,6 +245,51 @@ class ReservationList extends Component<ReservationListProps, State> {
     this.onListTouch();
     return false;
   };
+  _onRefresh = () => {
+  let h = 0
+  let scrollPosition = 0
+  const selectedDay = this.props.selectedDay.clone()
+  const iterator = parseDate(this.props.selectedDay.clone().getTime() - 3600 * 24 * 10 * 1000)
+  let reservations = []
+  for (let i = 0; i < 10; i++) {
+    const res = this.getReservationsForDay(iterator, this.props)
+    if (res) {
+      reservations = reservations.concat(res)
+    }
+    iterator.addDays(1)
+  }
+  scrollPosition = reservations.length
+  let hasReservation = false
+  for (let i = 0; i < reservations.length; i++) {
+    if (reservations[i]?.reservation) {
+      hasReservation = true
+    }
+  }
+  if (hasReservation) {
+    for (let i = 10; i < 30; i++) {
+      const res = this.getReservationsForDay(iterator, this.props)
+      if (res) {
+        reservations = reservations.concat(res)
+      }
+      iterator.addDays(1)
+    }
+    this.setState(
+      {
+        reservations,
+      },
+      () => {
+        setTimeout(() => {
+          let h = 0
+          for (let i = 0; i < scrollPosition; i++) {
+            h += this.heights[i] || 0
+          }
+          this.list.scrollToOffset({offset: h, animated: false})
+          this.props.onDayChange(selectedDay, false)
+        }, 100)
+      },
+    )
+  }
+}
 
   renderRow = ({item, index}: {item: DayAgenda; index: number}) => {
     const reservationProps = extractReservationProps(this.props);
@@ -284,7 +329,7 @@ class ReservationList extends Component<ReservationListProps, State> {
         onScroll={this.onScroll}
         refreshControl={this.props.refreshControl}
         refreshing={this.props.refreshing}
-        onRefresh={this.props.onRefresh}
+        onRefresh={this.props.onRefresh || this._onRefresh}
         onScrollBeginDrag={this.props.onScrollBeginDrag}
         onScrollEndDrag={this.props.onScrollEndDrag}
         onMomentumScrollBegin={this.props.onMomentumScrollBegin}
