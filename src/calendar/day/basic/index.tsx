@@ -4,6 +4,7 @@ import {TouchableOpacity, Text, View, ViewProps} from 'react-native';
 import {xdateToData} from '../../../interface';
 import {Theme, DayState, MarkingTypes, DateData} from '../../../types';
 import styleConstructor from './style';
+import moment from 'moment';
 import Marking, {MarkingProps} from '../marking';
 
 
