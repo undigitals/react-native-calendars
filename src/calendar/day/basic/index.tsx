@@ -53,7 +53,7 @@ const BasicDay = (props: BasicDayProps) => {
   const isSelected = _marking.selected || state === 'selected';
   const isDisabled = typeof _marking.disabled !== 'undefined' ? _marking.disabled : state === 'disabled';
   const isInactive = _marking?.inactive;
-  const isToday = state === 'today';
+  const isToday = moment(date).format("YYYY-MM-DD") == moment(new Date()).format("YYYY-MM-DD")
   const isMultiDot = markingType === Marking.markings.MULTI_DOT;
   const isMultiPeriod = markingType === Marking.markings.MULTI_PERIOD;
   const isCustom = markingType === Marking.markings.CUSTOM;
@@ -82,7 +82,8 @@ const BasicDay = (props: BasicDayProps) => {
       if (selectedColor) {
         styles.push({backgroundColor: selectedColor});
       }
-    } else if (isToday) {
+    } 
+    if (isToday) {
       styles.push(style.current.today);
     }
 
@@ -108,7 +109,8 @@ const BasicDay = (props: BasicDayProps) => {
       }
     } else if (isDisabled) {
       styles.push(style.current.disabledText);
-    } else if (isToday) {
+    } 
+    if (isToday) {
       styles.push(style.current.todayText);
     } else if (isInactive) {
       styles.push(style.current.inactiveText);
