@@ -349,6 +349,7 @@ export default class Agenda extends Component<AgendaProps, State> {
         selectedDay={this.state.selectedDay}
         topDay={this.state.topDay}
         onDayChange={this.onDayChange}
+        ListFooterComponent={this.props.ListFooterComponent}/>
       />
     );
   }
