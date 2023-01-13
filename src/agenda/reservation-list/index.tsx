@@ -334,6 +334,7 @@ class ReservationList extends Component<ReservationListProps, State> {
         onScrollEndDrag={this.props.onScrollEndDrag}
         onMomentumScrollBegin={this.props.onMomentumScrollBegin}
         onMomentumScrollEnd={this.props.onMomentumScrollEnd}
+        ListFooterComponent={this.props.ListFooterComponent || undefined} 
       />
     );
   }
